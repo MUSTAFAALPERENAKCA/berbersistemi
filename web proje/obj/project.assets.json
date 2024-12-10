@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Pc\\Desktop\\web proje\\web proje.csproj",
+      "projectUniqueName": "D:\\github\\berbersistemi\\web proje\\web proje.csproj",
       "projectName": "web proje",
-      "projectPath": "C:\\Users\\Pc\\Desktop\\web proje\\web proje.csproj",
+      "projectPath": "D:\\github\\berbersistemi\\web proje\\web proje.csproj",
       "packagesPath": "C:\\Users\\Pc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Pc\\Desktop\\web proje\\obj\\",
+      "outputPath": "D:\\github\\berbersistemi\\web proje\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
