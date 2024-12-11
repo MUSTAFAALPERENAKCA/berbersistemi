@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using web_proje.Models;
-
+//hgj
 namespace web_proje.Controllers;
 //alper zeybek2323
 public class HomeController : Controller
