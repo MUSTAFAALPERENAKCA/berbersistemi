@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace HospitalProject.Models
+namespace BarberShopProject.Models
 {
-
     public class LoginViewModel
     {
         [Required]
@@ -17,6 +16,7 @@ namespace HospitalProject.Models
         public string Password { get; set; }
         public bool RememberMe { get; set; } = false;
     }
+
     public class RegisterViewModel
     {
         [Required]
@@ -26,7 +26,7 @@ namespace HospitalProject.Models
         public string Name { get; set; }
 
         [Required]
-        [RegularExpression("^[a-zA-Z]+$", ErrorMessage = "Name must contain only letters.")]
+        [RegularExpression("^[a-zA-Z]+$", ErrorMessage = "Surname must contain only letters.")]
         [MaxLength(16)]
         [Display(Name = "Your surname")]
         public string Surname { get; set; }
@@ -42,32 +42,24 @@ namespace HospitalProject.Models
         public string Password { get; set; }
     }
 
-    public class AdminDocViewModel
+    public class AdminStylistViewModel
     {
-        public Doctor doctor { get; set; }
-        public List<Doctor> Doctors { get; set; }
-        public List<Department>? Departments { get; set; } = new List<Department>();
-
+        public Stylist Stylist { get; set; }
+        public List<Stylist> Stylists { get; set; }
+        public List<Shop>? Shops { get; set; } = new List<Shop>();
     }
-    public class AdminDepViewModel
-    {
-        public Department department { get; set; }
-        public List<Department> Departments { get; set; }
-    }
-<<<<<<< HEAD
-<<<<<<< Updated upstream
 
-    public class PatientViewModel :Appointment         // for new appointments
-=======
-    public class PatientViewModel        // for new appointments
->>>>>>> Stashed changes
-=======
-    public class PatientViewModel        // for new appointments
->>>>>>> 70bb60e2bba537100c2b20f3ee40149dd90b72a1
+    public class AdminShopViewModel
     {
-        public Patient? Patient { get; set; }
+        public Shop Shop { get; set; }
+        public List<Shop> Shops { get; set; }
+    }
+
+    public class CustomerViewModel // for booking new appointments
+    {
+        public Customer? Customer { get; set; }
         public Appointment? Appointment { get; set; }
-        public List<Department>? Departments { get; set; } = new List<Department>();
-        public List<Doctor>? Doctors { get; set; } = new List<Doctor>();
+        public List<Shop>? Shops { get; set; } = new List<Shop>();
+        public List<Stylist>? Stylists { get; set; } = new List<Stylist>();
     }
 }
