@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using web_proje.Models;
+using BarberShopProject.Models;
+
+
 //hgj
 namespace web_proje.Controllers;
 //alper zeybek2323
