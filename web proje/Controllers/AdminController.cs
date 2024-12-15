@@ -195,4 +195,8 @@ namespace BarberShopProject.Controllers
             return RedirectToAction("AdminPanel");
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 3feb74ce623b0bdc20761dd22dca54cb061f0c29
