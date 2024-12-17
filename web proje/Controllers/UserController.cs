@@ -1,4 +1,4 @@
-using HospitalProject.Models;
+using BarberShopProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
