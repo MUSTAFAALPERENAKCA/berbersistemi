@@ -20,42 +20,36 @@ namespace BarberShopProject.Controllers
 
         public IActionResult LoadSection(string section)
         {
-            if (section == "_section1") // Stylists Management
+            var viewModel = GetViewModelForSection(section);
+            if (viewModel == null)
             {
-                var viewModel = new AdminStylistViewModel
+                return View(section);
+            }
+            return View(section, viewModel);
+        }
+
+        private object GetViewModelForSection(string section)
+        {
+            return section switch
+            {
+                "_section1" => new AdminStylistViewModel
                 {
                     Stylists = _context.Stylists.ToList(),
                     Shops = _context.Shops.ToList(),
                     Stylist = new Stylist(),
-                };
-                return View(section, viewModel);
-            }
-            else if (section == "_section2") // Shops Management
-            {
-                var viewModel = new AdminShopViewModel
+                },
+                "_section2" => new AdminShopViewModel
                 {
-                    Shops = _context.Shops
-                        .Include(s => s.Stylists) // Include stylists associated with shops
-                        .ToList(),
-                    Shop = new Shop()
-                };
-                return View(section, viewModel);
-            }
-            else if (section == "_section3") // Customers Management
-            {
-                var customers = _context.Customers.ToList();
-                return View(section, customers);
-            }
-            else if (section == "_section4") // Appointments Management
-            {
-                var appointments = _context.Appointments
-                    .Include(a => a.Stylist) // Include related stylist
-                    .Include(a => a.Shop)    // Include related shop
-                    .ToList();
-
-                return View(section, appointments);
-            }
-            return View(section);
+                    Shops = _context.Shops.Include(s => s.Stylists).ToList(),
+                    Shop = new Shop(),
+                },
+                "_section3" => _context.Customers.ToList(),
+                "_section4" => _context.Appointments
+                    .Include(a => a.Stylist)
+                    .Include(a => a.Shop)
+                    .ToList(),
+                _ => null,
+            };
         }
 
         public IActionResult AdminPanel()
@@ -64,31 +58,30 @@ namespace BarberShopProject.Controllers
         }
 
         [HttpPost]
-        public IActionResult ShopRegister(Shop shop)
+        public async Task<IActionResult> ShopRegisterAsync(Shop shop)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var shopExists = _context.Shops.Any(s => s.ShopId == shop.ShopId);
+                    var shopExists = await _context.Shops.AnyAsync(s => s.ShopId == shop.ShopId);
 
                     if (shopExists)
                     {
-                        var existingShop = _context.Shops.Find(shop.ShopId);
+                        var existingShop = await _context.Shops.FindAsync(shop.ShopId);
                         _context.Entry(existingShop).CurrentValues.SetValues(shop);
                         _context.Entry(existingShop).State = EntityState.Modified;
-                        Console.WriteLine("Shop modified");
                     }
                     else
                     {
-                        _context.Shops.Add(shop);
-                        Console.WriteLine("Shop added");
+                        await _context.Shops.AddAsync(shop);
                     }
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     ModelState.AddModelError(string.Empty, "An error occurred while saving the shop. Please try again.");
+                    Console.Error.WriteLine($"Error: {ex.Message}");
                 }
                 return RedirectToAction("AdminPanel");
             }
@@ -96,17 +89,17 @@ namespace BarberShopProject.Controllers
             {
                 var viewModel = new AdminShopViewModel
                 {
-                    Shops = _context.Shops.ToList(),
-                    Shop = shop
+                    Shops = await _context.Shops.ToListAsync(),
+                    Shop = shop,
                 };
                 return View("_section2", viewModel);
             }
         }
 
         [HttpPost]
-        public IActionResult ShopRemove(int id)
+        public async Task<IActionResult> ShopRemoveAsync(int id)
         {
-            var shop = _context.Shops.Include(s => s.Stylists).FirstOrDefault(s => s.ShopId == id);
+            var shop = await _context.Shops.Include(s => s.Stylists).FirstOrDefaultAsync(s => s.ShopId == id);
 
             if (shop == null)
                 return NotFound();
@@ -119,47 +112,47 @@ namespace BarberShopProject.Controllers
                     _context.Stylists.RemoveRange(stylistsToDelete);
 
                     shop.Stylists = null;
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
                 _context.Shops.Remove(shop);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, "An error occurred while trying to remove the shop.");
+                Console.Error.WriteLine($"Error: {ex.Message}");
             }
             return RedirectToAction("AdminPanel");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult RegisterStylist(Stylist stylist)
+        public async Task<IActionResult> RegisterStylistAsync(Stylist stylist)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var stylistExists = _context.Stylists.Any(s => s.StylistId == stylist.StylistId);
-                    Shop shop = _context.Shops.Find(stylist.ShopId);
+                    var stylistExists = await _context.Stylists.AnyAsync(s => s.StylistId == stylist.StylistId);
+                    var shop = await _context.Shops.FindAsync(stylist.ShopId);
 
                     if (stylistExists)
                     {
-                        var existingStylist = _context.Stylists.Find(stylist.StylistId);
+                        var existingStylist = await _context.Stylists.FindAsync(stylist.StylistId);
                         _context.Entry(existingStylist).CurrentValues.SetValues(stylist);
                         _context.Entry(existingStylist).State = EntityState.Modified;
-                        Console.WriteLine("Stylist modified");
                     }
                     else
                     {
-                        _context.Stylists.Add(stylist);
+                        await _context.Stylists.AddAsync(stylist);
                         shop.Stylists.Add(stylist);
-                        Console.WriteLine("Stylist added");
                     }
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     ModelState.AddModelError(string.Empty, "An error occurred while saving the stylist. Please try again.");
+                    Console.Error.WriteLine($"Error: {ex.Message}");
                 }
                 return RedirectToAction("AdminPanel");
             }
@@ -168,35 +161,39 @@ namespace BarberShopProject.Controllers
                 var viewModel = new AdminStylistViewModel
                 {
                     Stylist = stylist,
-                    Stylists = _context.Stylists.ToList(),
-                    Shops = _context.Shops.ToList()
+                    Stylists = await _context.Stylists.ToListAsync(),
+                    Shops = await _context.Shops.ToListAsync(),
                 };
                 return View("_section1", viewModel);
             }
         }
 
         [HttpPost]
-        public IActionResult StylistRemove(int id)
+        public async Task<IActionResult> StylistRemoveAsync(int id)
         {
-            var stylist = _context.Stylists.Find(id);
+            var stylist = await _context.Stylists.FindAsync(id);
             if (stylist == null)
                 return NotFound();
 
-            var appointmentsToDelete = _context.Appointments.Where(a => a.StylistId == id);
-            _context.Appointments.RemoveRange(appointmentsToDelete);
+            try
+            {
+                var appointmentsToDelete = _context.Appointments.Where(a => a.StylistId == id);
+                _context.Appointments.RemoveRange(appointmentsToDelete);
 
-            stylist.ShopId = null;
+                stylist.ShopId = null;
 
-            _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
-            _context.Stylists.Remove(stylist);
-            _context.SaveChanges();
+                _context.Stylists.Remove(stylist);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "An error occurred while trying to remove the stylist.");
+                Console.Error.WriteLine($"Error: {ex.Message}");
+            }
 
             return RedirectToAction("AdminPanel");
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 3feb74ce623b0bdc20761dd22dca54cb061f0c29
