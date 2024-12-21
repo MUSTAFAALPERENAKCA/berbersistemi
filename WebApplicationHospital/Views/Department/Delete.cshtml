@@ -1,0 +1,38 @@
+﻿@model WebApplicationHospital.Models.ApplicationUser
+
+@{
+    ViewData["Title"] = "Delete Professor";
+}
+
+<h2>Are you sure you want to delete this professor?</h2>
+
+<div class="alert alert-warning" role="alert">
+    This action cannot be undone.
+</div>
+
+<div class="card">
+    <div class="card-header">
+        Professor Information
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Name</dt>
+            <dd class="col-sm-9">@Model.Name</dd>
+
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3">Phone Number</dt>
+            <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+            <dt class="col-sm-3">Department</dt>
+            <dd class="col-sm-9">@Model.DepartmentId</dd>
+        </dl>
+    </div>
+</div>
+
+<form method="post" asp-action="DeleteConfirmed">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="@Url.Action("Index", "Professor")" class="btn btn-secondary">Cancel</a>
+</form>
