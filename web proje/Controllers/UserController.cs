@@ -6,7 +6,7 @@ using System;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 
-namespace HospitalProject.Controllers
+namespace BarberShopProject.Controllers
 {
     public class UserController : Controller
     {
