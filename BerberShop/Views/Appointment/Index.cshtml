@@ -1,0 +1,61 @@
+﻿@model IEnumerable<BarberShop.Models.Appointment>
+
+
+<div class="container mt-4">
+    <h2>Appointments</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th>Customer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.StartDate.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>@item.EndDate.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        @if (item.IsBooked)
+                        {
+                            <span class="badge bg-success">Booked</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Available</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.IsBooked)
+                        {
+                            <span>@item.AssistantName</span>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!item.IsBooked)
+                        {
+                            <form asp-action="BookPost" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="calendarId" value="@item.CalendarId" />
+                                <button type="submit" class="btn btn-primary btn-sm">Take</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary btn-sm" disabled>Taken</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

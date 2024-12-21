@@ -1,0 +1,45 @@
+﻿@model IEnumerable<BarberShop.Models.ApplicationUser>
+
+<h2>Professor List</h2>
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">
+            Profesör Listesi
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Department</th>
+                        @if ((bool)ViewData["IsAdmin"])
+                        {
+                            <th>Actions</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stylist in Model)
+                    {
+                        <tr>
+                            <td>@stylist.Name</td>
+                            <td>@stylist.Email</td>
+                            <td>@stylist.PhoneNumber</td>
+                            <td>@stylist.DepartmentId</td>
+                            @if ((bool)ViewData["IsAdmin"])
+                            {
+                                <td>
+                                    <a href="@Url.Action("Edit", "Stylist", new { id = stylist.Id })" class="btn btn-warning btn-sm">Edit</a>
+                                    <a href="@Url.Action("Delete", "Stylist", new { id = stylist.Id })" class="btn btn-danger btn-sm">Delete</a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
