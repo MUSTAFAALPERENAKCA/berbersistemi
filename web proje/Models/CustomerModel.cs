@@ -1,13 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace HospitalProject.Models
+namespace BarberShopProject.Models
 {
 
-    public class Patient : ApplicationUser   // inherits IdentityUser
+    public class Customer : ApplicationUser   // inherits IdentityUser
     {
+        // Collection of appointments associated with the customer
         public ICollection<Appointment>? Appointments { get; set; } = new List<Appointment>();
     }
 
-    
 }
