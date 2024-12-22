@@ -16,20 +16,34 @@ public class DepartmentController : Controller
 
     public async Task<IActionResult> Index()
     {
-        // Kullanıcıları departmana göre grupla, ancak Departmanı null veya boş olmayanları seç
-        var departmentsWithUsers = await _context.Departments
-.Where(d => _context.Users.Any(u => u.DepartmentId == d.Id && u.DepartmentId != null))
-            .GroupBy(d => d.Name) // Aynı adı olan departmanları grupla
+        // "Stylist" rolüne sahip kullanıcıları ve onların departmanlarını listele
+        var departmentsWithStylists = await _context.Departments
+            .Where(d => _context.Users.Any(u => u.DepartmentId == d.Id && u.DepartmentId != null &&
+                                                 _context.UserRoles.Any(ur => ur.UserId == u.Id &&
+                                                                              _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Stylist"))))
+            .GroupBy(d => d.Name) // Departmanları adlarına göre grupla
             .Select(group => new
             {
                 DepartmentName = group.Key,
-                Users = group.SelectMany(d => _context.Users.Where(u => u.DepartmentId == d.Id)).ToList() // Grubun kullanıcılarını listele
+                Users = group.SelectMany(d => _context.Users
+                    .Where(u => u.DepartmentId == d.Id &&
+                                _context.UserRoles.Any(ur => ur.UserId == u.Id &&
+                                                             _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Stylist")))
+                    .Select(u => new
+                    {
+                        u.Id,
+                        u.Name,
+                        u.UserName,
+                        u.DepartmentId // Kullanıcının departman ID'sini de ekle
+                    })).ToList()
             })
             .ToListAsync();
 
         // Görüntü için departmanları model olarak gönderiyoruz
-        return View(departmentsWithUsers);
+        return View(departmentsWithStylists);
     }
+
+
 
 
     // Diğer metotlar (Create, Edit, Delete) burada devam edebilir

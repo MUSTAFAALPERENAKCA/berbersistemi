@@ -10,6 +10,7 @@ namespace BarberShop.Models
 
         // Bir departmanda birden fazla kullanıcı olabilir
         public ICollection<ApplicationUser> Users { get; set; }
+       
     }
 
 }

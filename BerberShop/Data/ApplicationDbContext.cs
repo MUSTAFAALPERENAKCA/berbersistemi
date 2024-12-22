@@ -25,7 +25,7 @@ namespace BarberShop.Data
                 .HasKey(a => a.Id);
 
             builder.Entity<Calendar>()
-                .HasMany(c => c.Assignments)
+                .HasMany(c => c.Assignments)  // Correctly referencing Assignments
                 .WithOne(a => a.Calendar)
                 .HasForeignKey(a => a.CalendarId);
 
@@ -34,8 +34,6 @@ namespace BarberShop.Data
                 .WithMany()
                 .HasForeignKey(a => a.AssistantId)
                 .OnDelete(DeleteBehavior.Restrict); // Use Restrict to prevent cascading delete
-
-
         }
     }
 }

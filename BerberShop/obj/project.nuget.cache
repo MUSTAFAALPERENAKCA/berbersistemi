@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "adWFoTOH5sqobCImtmiRQbaxb5qIz4e9MEIUdoYNWUpr73u/UTg2Pq8xmIe2cpczWB+mQ8OYLp7RrYKt/fNDyg==",
+  "dgSpecHash": "VxcduJzfc1lHCqPAMutFkENqrf7kfcJr7bA8vqW9IZlF1mZMZA+vWaTORgWnwkn6MQZpzeGDx6HTT/6ALBgz1Q==",
   "success": true,
   "projectFilePath": "D:\\github\\berbersistemi\\BerberShop\\BerberShop.csproj",
   "expectedPackageFiles": [
@@ -50,6 +50,7 @@
     "C:\\Users\\Pc\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\Pc\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
     "C:\\Users\\Pc\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
+    "C:\\Users\\Pc\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512",
     "C:\\Users\\Pc\\.nuget\\packages\\system.configuration.configurationmanager\\5.0.0\\system.configuration.configurationmanager.5.0.0.nupkg.sha512",
     "C:\\Users\\Pc\\.nuget\\packages\\system.diagnostics.diagnosticsource\\5.0.0\\system.diagnostics.diagnosticsource.5.0.0.nupkg.sha512",
     "C:\\Users\\Pc\\.nuget\\packages\\system.drawing.common\\5.0.0\\system.drawing.common.5.0.0.nupkg.sha512",

@@ -20,17 +20,70 @@ namespace BarberShop.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var user = await _userManager.GetUserAsync(User);
+            var appointments = await _context.Appointments
+                .Where(a => a.IsPending && !a.IsConfirmed) // IsPending = true ve IsConfirmed = false olanları filtrele
+                .Select(a => new Appointment
+                {
+                    Id = a.Id,
+                    StartDate = a.StartDate,
+                    EndDate = a.EndDate,
+                    Service = a.Service,
+                    //CustomerName = a.Customer.Name, 
+                    //StylistName = a.Stylist.Name,      // !!!! NOT: en son IsPending = true ve IsConfirmed = false olanları filtrele bu sekılde lıstelemeye calsıtım schedule/ındex sayfasında ama olmadı 
+                    IsPending = a.IsPending,
+                    IsConfirmed = a.IsConfirmed
+                })
+                .ToListAsync();
+
+            return View(appointments);
+        }
 
 
-            if (user == null || !await _userManager.IsInRoleAsync(user, "Stylist"))
+
+        public async Task<IActionResult> PendingApprovals()
+        {
+            var pendingAppointments = await _context.Appointments
+                .Where(a => a.IsPending && !a.IsConfirmed)
+                .Include(a => a.Stylist)
+                .ToListAsync();
+
+            return View(pendingAppointments);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ConfirmAppointment(int id)
+        {
+            var appointment = await _context.Appointments.FindAsync(id);
+            if (appointment == null)
             {
-                return RedirectToAction("AccessDenied", "Account");
+                return NotFound();
             }
 
-            var schedules = await _context.Calendars.ToListAsync();
-            return View(schedules);
+            // Stilist onayı
+            appointment.IsPending = false;
+            appointment.IsConfirmed = true;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(PendingApprovals));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectAppointment(int id)
+        {
+            var appointment = await _context.Appointments.FindAsync(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            // Randevu talebini reddet ve sil
+            _context.Appointments.Remove(appointment);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(PendingApprovals));
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Create()

@@ -1,61 +1,70 @@
-﻿@model IEnumerable<BarberShop.Models.Appointment>
+﻿@model IEnumerable<dynamic>
+@using System.Globalization
 
+<h2>Randevu Listesi</h2>
 
-<div class="container mt-4">
-    <h2>Appointments</h2>
+<table class="table">
+    <tbody>
+    @foreach (var stylistGroup in Model.GroupBy(a => a.StylistId))
+    {
+        var stylistName = stylistGroup.FirstOrDefault()?.AssistantName ?? "Unknown Stylist";
 
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Status</th>
-                <th>Customer</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.StartDate.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>@item.EndDate.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>
-                        @if (item.IsBooked)
-                        {
-                            <span class="badge bg-success">Booked</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning">Available</span>
-                        }
-                    </td>
-                    <td>
-                        @if (item.IsBooked)
-                        {
-                            <span>@item.AssistantName</span>
-                        }
-                        else
-                        {
-                            <span>-</span>
-                        }
-                    </td>
-                    <td>
-                        @if (!item.IsBooked)
-                        {
-                            <form asp-action="BookPost" method="post">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="calendarId" value="@item.CalendarId" />
-                                <button type="submit" class="btn btn-primary btn-sm">Take</button>
-                            </form>
-                        }
-                        else
-                        {
-                            <button class="btn btn-secondary btn-sm" disabled>Taken</button>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3>@stylistName</h3>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    @foreach (var appointment in stylistGroup.OrderBy(a => a.StartDate))
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                @appointment.StartDate.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture) - 
+                                @appointment.EndDate.ToString("HH:mm", CultureInfo.InvariantCulture)
+                            </span>
+                            <span>
+                                @if (appointment.IsConfirmed)
+                                {
+                                    <span class="text-success">Reserved</span>
+                                }
+                                else if (appointment.IsPending)
+                                {
+                                    <span class="text-warning">Pending Approval by @appointment.AssistantName</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Available</span>
+                                }
+                            </span>
+                            <span>
+                                @if (!appointment.IsConfirmed)
+                                {
+                                    @if (appointment.IsPending)
+                                    {
+                                        <!-- Stylist confirmation button -->
+                                        <form asp-action="ApprovePending" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@appointment.Id" />
+                                            @*<button type="submit" class="btn btn-primary btn-sm">Approve</button>*@
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <!-- User booking button -->
+                                        <form asp-action="BookPost" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@appointment.Id" />
+                                            <button type="submit" class="btn btn-success btn-sm">Book</button>
+                                        </form>
+                                    }
+                                }
+                            </span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+    </tbody>
+</table>
+<div class="text-right">
+    <a asp-action="GenerateWeeklyAppointments" class="btn btn-success">Generate Weekly Appointments</a>
 </div>
