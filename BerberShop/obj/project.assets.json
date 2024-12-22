@@ -3673,11 +3673,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Pc\\Desktop\\webProgramlama (2)\\webProgramlama\\BerberShop\\BerberShop.csproj",
+      "projectUniqueName": "D:\\github\\berbersistemi\\BerberShop\\BerberShop.csproj",
       "projectName": "BerberShop",
-      "projectPath": "C:\\Users\\Pc\\Desktop\\webProgramlama (2)\\webProgramlama\\BerberShop\\BerberShop.csproj",
+      "projectPath": "D:\\github\\berbersistemi\\BerberShop\\BerberShop.csproj",
       "packagesPath": "C:\\Users\\Pc\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Pc\\Desktop\\webProgramlama (2)\\webProgramlama\\BerberShop\\obj\\",
+      "outputPath": "D:\\github\\berbersistemi\\BerberShop\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

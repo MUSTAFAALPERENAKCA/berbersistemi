@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YdmUkKtLprxuqrtrS2nJkIZuswx2KkiDhcXrXKgvkLgyGan1gghDqDrhPRBq2bKYEKA63n9b7fzVc5k/wTimuw==",
+  "dgSpecHash": "adWFoTOH5sqobCImtmiRQbaxb5qIz4e9MEIUdoYNWUpr73u/UTg2Pq8xmIe2cpczWB+mQ8OYLp7RrYKt/fNDyg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Pc\\Desktop\\webProgramlama (2)\\webProgramlama\\BerberShop\\BerberShop.csproj",
+  "projectFilePath": "D:\\github\\berbersistemi\\BerberShop\\BerberShop.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Pc\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Pc\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
