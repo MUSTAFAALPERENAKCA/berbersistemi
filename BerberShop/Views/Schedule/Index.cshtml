@@ -1,32 +1,36 @@
 ﻿@model IEnumerable<BarberShop.Models.Appointment>
-@using System.Globalization
 
-<h2>Bekleyen Randevu Talepleri</h2>
+<h2>Pending Appointment Approvals</h2>
 
 <table class="table">
     <thead>
         <tr>
-            <th>Başlangıç</th>
-            <th>Bitiş</th>
-            <th>Hizmet</th>
-            <th>Müşteri</th>
-            <th>Stilist</th>
-            <th>Durum</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Service</th>
+            <th>Stylist</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var appointment in Model)
-    {
-        <tr>
-            <td>@appointment.StartDate.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture)</td>
-            <td>@appointment.EndDate.ToString("HH:mm", CultureInfo.InvariantCulture)</td>
-            <td>@appointment.Service</td>
-            <td>@appointment.CustomerName</td>
-            <td>@appointment.StylistName</td>
-            <td>
-                <span class="text-warning">Onay Bekliyor</span>
-            </td>
-        </tr>
-    }
+        @foreach (var appointment in Model)
+        {
+            <tr>
+                <td>@appointment.StartDate.ToString("dd MMM yyyy HH:mm")</td>
+                <td>@appointment.EndDate.ToString("HH:mm")</td>
+                <td>@appointment.Service</td>
+                <td>@appointment.Stylist?.UserName ?? "Unknown"</td>
+                <td>
+                    <form asp-action="ConfirmAppointment" method="post" style="display:inline">
+                        <input type="hidden" name="id" value="@appointment.Id" />
+                        <button type="submit" class="btn btn-success btn-sm">Confirm</button>
+                    </form>
+                    <form asp-action="RejectAppointment" method="post" style="display:inline">
+                        <input type="hidden" name="id" value="@appointment.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

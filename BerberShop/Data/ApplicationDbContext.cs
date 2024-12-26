@@ -16,6 +16,8 @@ namespace BarberShop.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Calendar> Calendars { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

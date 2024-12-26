@@ -33,9 +33,6 @@
                     </li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item">
-                            <a class="nav-link" href="@Url.Action("Index", "Calendar")">Takvim</a>
-                        </li>
                         @if (User.IsInRole("Customer"))
                         {
                             <li class="nav-item">

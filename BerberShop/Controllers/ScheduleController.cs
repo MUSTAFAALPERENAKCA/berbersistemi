@@ -21,24 +21,12 @@ namespace BarberShop.Controllers
         public async Task<IActionResult> Index()
         {
             var appointments = await _context.Appointments
-                .Where(a => a.IsPending && !a.IsConfirmed) // IsPending = true ve IsConfirmed = false olanları filtrele
-                .Select(a => new Appointment
-                {
-                    Id = a.Id,
-                    StartDate = a.StartDate,
-                    EndDate = a.EndDate,
-                    Service = a.Service,
-                    //CustomerName = a.Customer.Name, 
-                    //StylistName = a.Stylist.Name,      // !!!! NOT: en son IsPending = true ve IsConfirmed = false olanları filtrele bu sekılde lıstelemeye calsıtım schedule/ındex sayfasında ama olmadı 
-                    IsPending = a.IsPending,
-                    IsConfirmed = a.IsConfirmed
-                })
+                .Where(a => a.IsPending && !a.IsConfirmed) // Sadece onay bekleyen randevuları getir
+                .Include(a => a.Stylist)
                 .ToListAsync();
 
             return View(appointments);
         }
-
-
 
         public async Task<IActionResult> PendingApprovals()
         {
@@ -59,7 +47,6 @@ namespace BarberShop.Controllers
                 return NotFound();
             }
 
-            // Stilist onayı
             appointment.IsPending = false;
             appointment.IsConfirmed = true;
             await _context.SaveChangesAsync();
@@ -76,14 +63,11 @@ namespace BarberShop.Controllers
                 return NotFound();
             }
 
-            // Randevu talebini reddet ve sil
             _context.Appointments.Remove(appointment);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(PendingApprovals));
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -99,144 +83,78 @@ namespace BarberShop.Controllers
         }
 
         [HttpPost("Schedule/Create")]
-        public async Task<IActionResult> Create(Calendar calendar)
+        public async Task<IActionResult> Create(Schedule schedule)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.GetUserAsync(User);
 
             if (user == null || !await _userManager.IsInRoleAsync(user, "Stylist"))
             {
-                return RedirectToAction("AccessDenied", "Schedule");
-            }
-
-            // Tarih aralığı doğrulaması
-            if (calendar.StartDate >= calendar.EndDate)
-            {
-                ModelState.AddModelError("", "End date must be greater than start date.");
+                return RedirectToAction("AccessDenied", "Account");
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Calendars.Add(calendar);
-                    await _context.SaveChangesAsync();
-                    Console.WriteLine($"Calendar ID: {calendar.Id}, StartDate: {calendar.StartDate}, EndDate: {calendar.EndDate} successfully saved.");
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Database Save Error: {ex.Message}");
-                    ModelState.AddModelError("", "An error occurred while saving the data. Please try again.");
-                }
-            }
-            else
-            {
-                ModelState.AddModelError("", "Validation failed. Please check the input values.");
+                _context.Schedules.Add(schedule);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(calendar);
+            return View(schedule);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null || !await _userManager.IsInRoleAsync(user, "Stylist"))
+            var schedule = await _context.Schedules.FindAsync(id);
+            if (schedule == null)
             {
-                return RedirectToAction("AccessDenied", "Account");
+                return NotFound();
             }
 
-            var calendar = await _context.Calendars.FindAsync(id);
-            if (calendar == null)
-            {
-                return NotFound("Calendar not found.");
-            }
-
-            return View(calendar);
+            return View(schedule);
         }
+
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Calendar calendar)
+        public async Task<IActionResult> Edit(int id, Schedule schedule)
         {
-            if (id != calendar.Id)
+            if (id != schedule.Id)
             {
-                return BadRequest("Invalid calendar ID.");
+                return BadRequest();
             }
 
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null || !await _userManager.IsInRoleAsync(user, "Stylist"))
+            if (ModelState.IsValid)
             {
-                return RedirectToAction("AccessDenied", "Account");
-            }
-
-            try
-            {
-                _context.Calendars.Update(calendar);
+                _context.Schedules.Update(schedule);
                 await _context.SaveChangesAsync();
-                Console.WriteLine($"Calendar ID: {calendar.Id} successfully updated.");
-                return RedirectToAction("Index", "Schedule", new { calendarId = calendar.Id });
+                return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database Update Error: {ex.Message}");
-                ModelState.AddModelError("", "An error occurred while updating the data. Please try again.");
-                return View(calendar);
-            }
-          
+
+            return View(schedule);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null || !await _userManager.IsInRoleAsync(user, "Stylist"))
+            var schedule = await _context.Schedules.FindAsync(id);
+            if (schedule == null)
             {
-                return RedirectToAction("AccessDenied", "Account");
+                return NotFound();
             }
 
-            var calendar = await _context.Calendars.FindAsync(id);
-            if (calendar == null)
-            {
-                return NotFound("Calendar not found.");
-            }
-
-            return View(calendar);
+            return View(schedule);
         }
+
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null || !await _userManager.IsInRoleAsync(user, "Stylist"))
+            var schedule = await _context.Schedules.FindAsync(id);
+            if (schedule == null)
             {
-                return RedirectToAction("AccessDenied", "Account");
+                return NotFound();
             }
 
-            var calendar = await _context.Calendars.FindAsync(id);
-            if (calendar == null)
-            {
-                return NotFound("Calendar not found.");
-            }
-
-            try
-            {
-                _context.Calendars.Remove(calendar);
-                await _context.SaveChangesAsync();
-                Console.WriteLine($"Calendar ID: {id} successfully deleted.");
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database Delete Error: {ex.Message}");
-                ModelState.AddModelError("", "An error occurred while deleting the data. Please try again.");
-            }
-
+            _context.Schedules.Remove(schedule);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
     }
