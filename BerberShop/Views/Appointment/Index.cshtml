@@ -1,10 +1,27 @@
-﻿@model IEnumerable<dynamic>
+﻿@model IEnumerable<BarberShop.Models.Appointment>
+@using BarberShop.Models
 @using System.Globalization
 
-<h2>Randevu Listesi</h2>
+<h2 class="my-4">Randevu Listesi</h2>
 
-<table class="table">
-    <tbody>
+<!-- Hizmet Seçimi -->
+<div class="mb-4">
+    <form id="serviceSelectionForm">
+        <div class="form-group">
+            <label for="Service">Hizmet Seçimi</label>
+            <select id="Service" name="service" class="form-control">
+                <option value="">Hizmet seçiniz...</option>
+                @foreach (var service in (List<string>)ViewData["Services"])
+                {
+                    <option value="@service">@service</option>
+                }
+            </select>
+        </div>
+    </form>
+</div>
+
+<!-- Randevular Listesi -->
+<div>
     @foreach (var stylistGroup in Model.GroupBy(a => a.StylistId))
     {
         var stylistName = stylistGroup.FirstOrDefault()?.AssistantName ?? "Unknown Stylist";
@@ -19,7 +36,7 @@
                     {
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <span>
-                                @appointment.StartDate.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture) - 
+                                @appointment.StartDate.ToString("dd MMM yyyy HH:mm", CultureInfo.InvariantCulture) -
                                 @appointment.EndDate.ToString("HH:mm", CultureInfo.InvariantCulture)
                             </span>
                             <span>
@@ -44,14 +61,15 @@
                                         <!-- Stylist confirmation button -->
                                         <form asp-action="ApprovePending" method="post" class="d-inline">
                                             <input type="hidden" name="id" value="@appointment.Id" />
-                                            @*<button type="submit" class="btn btn-primary btn-sm">Approve</button>*@
+                                            <button type="submit" class="btn btn-primary btn-sm">Approve</button>
                                         </form>
                                     }
                                     else
                                     {
                                         <!-- User booking button -->
-                                        <form asp-action="BookPost" method="post" class="d-inline">
+                                        <form asp-action="BookPost" method="post" class="d-inline" onsubmit="return submitService(@appointment.Id)">
                                             <input type="hidden" name="id" value="@appointment.Id" />
+                                            <input type="hidden" name="service" id="hiddenService-@appointment.Id" />
                                             <button type="submit" class="btn btn-success btn-sm">Book</button>
                                         </form>
                                     }
@@ -63,8 +81,29 @@
             </div>
         </div>
     }
-    </tbody>
-</table>
-<div class="text-right">
-    <a asp-action="GenerateWeeklyAppointments" class="btn btn-success">Generate Weekly Appointments</a>
 </div>
+
+<!-- Haftalık Randevular Oluştur -->
+<div class="text-right mt-4">
+    <form asp-action="GenerateWeeklyAppointments" method="post">
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">Generate Weekly Appointments</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Seçili hizmeti ilgili randevu formuna ekle
+    function submitService(appointmentId) {
+        var selectedService = document.getElementById("Service").value;
+
+        if (!selectedService) {
+            alert("Lütfen bir hizmet seçiniz.");
+            return false;
+        }
+
+        var hiddenServiceInput = document.getElementById(`hiddenService-${appointmentId}`);
+        hiddenServiceInput.value = selectedService;
+        return true;
+    }
+</script>

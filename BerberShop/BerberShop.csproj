@@ -18,5 +18,13 @@
 		<PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="images\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\images\background.jpg" />
+	</ItemGroup>
+
 
 </Project>

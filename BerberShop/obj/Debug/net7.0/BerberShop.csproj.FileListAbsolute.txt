@@ -162,9 +162,6 @@ D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.csproj.CoreCompil
 D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.MvcApplicationPartsAssemblyInfo.cache
 D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.RazorAssemblyInfo.cache
 D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.RazorAssemblyInfo.cs
-D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.dll
-D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\refint\BerberShop.dll
-D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.pdb
 D:\github\berbersistemi\BerberShop\bin\Debug\net7.0\appsettings.Development.json
 D:\github\berbersistemi\BerberShop\bin\Debug\net7.0\appsettings.json
 D:\github\berbersistemi\BerberShop\bin\Debug\net7.0\libman.json
@@ -230,5 +227,8 @@ D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\scopedcss\Views\Shared\_Layo
 D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\scopedcss\bundle\BerberShop.styles.css
 D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\scopedcss\projectbundle\BerberShop.bundle.scp.css
 D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.csproj.CopyComplete
+D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.dll
+D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\refint\BerberShop.dll
+D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.pdb
 D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\BerberShop.genruntimeconfig.cache
 D:\github\berbersistemi\BerberShop\obj\Debug\net7.0\ref\BerberShop.dll

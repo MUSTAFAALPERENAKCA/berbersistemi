@@ -26,6 +26,9 @@ namespace BarberShop.Controllers
             var appointments = await _context.Appointments
                 .Include(a => a.Stylist)
                 .ToListAsync();
+
+            ViewData["Services"] = new List<string> { "Saç Kesimi", "Sakal Tıraşı", "Bakım" };
+
             return View(appointments);
         }
 
@@ -38,6 +41,7 @@ namespace BarberShop.Controllers
                                                          _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Stylist")))
                 .ToListAsync();
             ViewData["Stylists"] = stylists;
+            ViewData["Services"] = new List<string> { "Saç Kesimi", "Sakal Tıraşı", "Bakım" };
             return View();
         }
 
@@ -61,6 +65,11 @@ namespace BarberShop.Controllers
                 ModelState.AddModelError("", "Bu zaman dilimi dolu. Lütfen başka bir zaman seçin.");
                 return View(model);
             }
+            if (!ModelState.IsValid)
+            {
+                ViewData["Services"] = new List<string> { "Saç Kesimi", "Sakal Tıraşı", "Bakım" };
+                return View(model);
+            }
 
             _context.Appointments.Add(model);
             await _context.SaveChangesAsync();
@@ -82,7 +91,7 @@ namespace BarberShop.Controllers
             return RedirectToAction(nameof(Index));
         }
         
-    public async Task<IActionResult> GenerateWeeklyAppointments()
+    public async Task<IActionResult> GenerateWeeklyAppointments(string service)
 {
         // "Stylist" rolündeki kullanıcıları bul
         var stylistRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Stylist");
@@ -127,7 +136,7 @@ namespace BarberShop.Controllers
                             StylistId = stylist.Id,
                             StartDate = startTime,
                             EndDate = endTime,
-                            Service = "Standard Service", // Varsayılan hizmet adı
+                            Service = service, // Varsayılan hizmet adı
                             Price = 100, // Varsayılan fiyat
                             Duration = 60, // 60 dakika
                             IsConfirmed = false, // Varsayılan olarak onaysız
@@ -166,7 +175,7 @@ namespace BarberShop.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> BookPost(int id)
+        public async Task<IActionResult> BookPost(int id, string service)
         {
             var appointment = await _context.Appointments.FindAsync(id);
             if (appointment == null)
@@ -174,20 +183,49 @@ namespace BarberShop.Controllers
                 return NotFound();
             }
 
-            // Eğer randevu zaten onaylanmışsa, işlem yapma
+            if (string.IsNullOrWhiteSpace(service))
+            {
+                ModelState.AddModelError("", "Lütfen bir hizmet seçiniz.");
+                appointment.IsPending = true;
+                await _context.SaveChangesAsync();
+                ModelState.AddModelError("", "Önce servis seçiniz.");
+                return RedirectToAction(nameof(Index));
+                // Stilistin onay sayfasına yönlendirme (örnek)
+            }
+            //Eğer randevu zaten onaylanmışsa, işlem yapma
             if (appointment.IsConfirmed)
             {
                 ModelState.AddModelError("", "This appointment is already confirmed.");
                 return RedirectToAction(nameof(Index));
             }
-
-            // Talep oluşturma işlemi (IsPending true olarak bırakılır)
+            appointment.Service = service;
             appointment.IsPending = true;
             await _context.SaveChangesAsync();
-
             // Stilistin onay sayfasına yönlendirme (örnek)
-            return RedirectToAction("PendingApprovals", "Schedule");
+            return RedirectToAction("PendingApprovals", "Schedule");  
         }
+        //public async Task<IActionResult> BookPost(int id)
+        //{
+        //    var appointment = await _context.Appointments.FindAsync(id);
+        //    if (appointment == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Eğer randevu zaten onaylanmışsa, işlem yapma
+        //    if (appointment.IsConfirmed)
+        //    {
+        //        ModelState.AddModelError("", "This appointment is already confirmed.");
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    // Talep oluşturma işlemi (IsPending true olarak bırakılır)
+        //    appointment.IsPending = true;
+        //    await _context.SaveChangesAsync();
+
+        //    // Stilistin onay sayfasına yönlendirme (örnek)
+        //    return RedirectToAction("PendingApprovals", "Schedule");
+        //}
 
     }
 }

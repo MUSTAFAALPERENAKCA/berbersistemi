@@ -17,8 +17,8 @@ namespace BarberShop.Models
 
         [Required]
         public DateTime EndDate { get; set; }
-
-        public string Service { get; set; } // İşlem adı
+        [Required]
+        public string Service { get; set; }
 
         public decimal Price { get; set; } // Ücret
 
