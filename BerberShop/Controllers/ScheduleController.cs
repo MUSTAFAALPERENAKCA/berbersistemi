@@ -54,6 +54,19 @@ namespace BarberShop.Controllers
             return RedirectToAction(nameof(PendingApprovals));
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetAppointments(string stylistId)
+        {
+            var appointments = await _context.Appointments.Where(x => x.IsConfirmed == true).ToListAsync();
+            
+            if(appointments!=null)
+            {
+                return View(appointments);
+            }
+            return RedirectToAction(nameof(ConfirmAppointment));
+        }
+
         [HttpPost]
         public async Task<IActionResult> RejectAppointment(int id)
         {

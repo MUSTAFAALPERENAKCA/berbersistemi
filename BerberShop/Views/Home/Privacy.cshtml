@@ -71,13 +71,21 @@
                         alert("API'den beklenmeyen bir yanıt alındı.");
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function (xhr) {
                     let errorMessage = "Bir hata oluştu. Lütfen tekrar deneyin.";
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
+
+                    if (xhr.status === 403) {
+                        errorMessage = "Erişim reddedildi. Lütfen API anahtarınızı kontrol edin.";
+                    } else if (xhr.status === 404) {
+                        errorMessage = "API adresi bulunamadı. Lütfen URL'yi kontrol edin.";
+                    } else if (xhr.status === 429) {
+                        errorMessage = "Kota sınırına ulaştınız. Lütfen daha sonra tekrar deneyin.";
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
                         errorMessage = xhr.responseJSON.message; // Hata mesajını API'den alınan yanıtla güncelle
                     }
+
                     alert(errorMessage);
-                    console.error("Error:", status, error);
+                    console.error("Error:", xhr.status, xhr.responseText);
                 },
             });
         });

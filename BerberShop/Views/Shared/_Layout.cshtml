@@ -48,6 +48,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="@Url.Action("Index", "Schedule")">Randevu Onaylama</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("GetAppointments", "Schedule")">Çalışan Verileri</a>
+                            </li>
                         }
                         if (User.IsInRole("Admin"))
                         {
